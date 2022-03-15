@@ -18,7 +18,8 @@ group = 'io.typefox.elkserver'
 
 ext.versions = [
     elk: '0.8.0-SNAPSHOT',
-    emf: '2.12.0'
+    emf: '2.12.0',
+    gson: '2.8.9'
 ]
 
 application {
@@ -26,6 +27,7 @@ application {
 }
 
 dependencies {
+    implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "org.eclipse.emf:org.eclipse.emf.common:${versions.emf}"
     implementation "org.eclipse.emf:org.eclipse.emf.ecore:${versions.emf}"
     implementation "org.eclipse.elk:org.eclipse.elk.graph:${versions.elk}"
