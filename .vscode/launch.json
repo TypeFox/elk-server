@@ -1,0 +1,12 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+        {
+            "name": "Socket ELK Server",
+            "type": "java",
+            "request": "launch",
+            "mainClass": "io.typefox.elkserver.ElkServerApplication",
+            "args": "--socket"
+        }
+	]
+}

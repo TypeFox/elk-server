@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: 11
+        distribution: adopt
+    - name: Run Gradle build
+      run: ./gradlew --no-daemon build
+    - name: Publish application
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref }}
+        file: build/distributions/*.zip
+        file_glob: true

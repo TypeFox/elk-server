@@ -34,14 +34,17 @@ public class SocketElkServer extends AbstractElkServer {
             var serverSocket = AsynchronousServerSocketChannel.open().bind(address)
         ) {
             logger.info("ELK Server listening to " + address);
+            int nextClientNo = 0;
             while (true) {
                 var socketChannel = serverSocket.accept().get();
-                logger.info("Accepted new connection.");
+                var clientNo = nextClientNo++;
+                logger.info("[" + clientNo + "] Accepted new connection.");
                 executorService.submit(() -> {
                     try {
-                        handle(socketChannel);
+                        handle(socketChannel, clientNo);
+                        logger.info("[" + clientNo + "] Closed connection.");
                     } catch (Exception exc) {
-                        logger.severe(exc.getMessage());
+                        logger.severe("[" + clientNo + "]" + exc.getMessage());
                         exc.printStackTrace();
                     }
                 });
@@ -51,7 +54,7 @@ public class SocketElkServer extends AbstractElkServer {
         }
     }
 
-    protected void handle(AsynchronousSocketChannel socketChannel) throws IOException {
+    protected void handle(AsynchronousSocketChannel socketChannel, int clientNo) throws IOException {
         var input = Channels.newInputStream(socketChannel);
         var writer = new OutputStreamWriter(Channels.newOutputStream(socketChannel), Charset.forName("UTF-8"));
         var engine = new RecursiveGraphLayoutEngine();
@@ -59,14 +62,14 @@ public class SocketElkServer extends AbstractElkServer {
 
         ElkNode graph;
         while ((graph = readGraph(input)) != null) {
-            logger.log(Level.FINE, "Received input graph.");
+            logger.info("[" + clientNo + "] Received input graph.");
             try {
                 engine.layout(graph, new BasicProgressMonitor());
-                logger.log(Level.FINE, "Computed layout");
+                logger.info("[" + clientNo + "] Computed layout.");
 
                 writeLayoutData(graph, writer, gson);
                 writer.flush();
-                logger.log(Level.FINE, "Sent JSON data.");
+                logger.info("[" + clientNo + "] Sent JSON data.");
             } catch (Exception exc) {
                 gson.toJson(new JsonObjects.Error(exc), writer);
             }
