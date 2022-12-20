@@ -5,10 +5,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {
-        name 'sonatype-snapshots'
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
 }
 
 sourceCompatibility = '11'
@@ -17,9 +13,9 @@ version = '0.1.0'
 group = 'io.typefox.elkserver'
 
 ext.versions = [
-    elk: '0.8.0-SNAPSHOT',
+    elk: '0.8.1',
     emf: '2.12.0',
-    gson: '2.8.9'
+    gson: '2.10'
 ]
 
 application {
